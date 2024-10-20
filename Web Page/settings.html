@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Location Map</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Header Styles */
+        .header {
+            background-color: #f4f4f4;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 40px;
+            font-weight: 600;
+            color: #1aa31f;
+            margin-left: 25px;
+        }
+
+        .nav-links {
+            display: flex;
+        }
+
+        .nav-links a {
+            margin-right: 30px;
+            color: black;
+            text-decoration: none;
+            font-weight: 500;
+            position: relative;
+        }
+
+        /* Underline Animation */
+        .nav-links a:before {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            background-color: #1aa31f;
+            /* Underline color */
+            bottom: 0;
+            left: 0;
+            transition: width 0.3s ease;
+            /* Transition duration and easing */
+        }
+
+        .nav-links a:hover:before {
+            width: 100%;
+        }
+
+        /* Map Styles */
+        #map {
+            height: 575px;
+            width: 75%;
+            margin: 20px auto;
+        }
+
+        /* Horizontal Rule Styles */
+        hr {
+            height: 5px;
+            background-color: green;
+            border: none;
+            margin: 0;
+        }
+
+        /* Form Styles */
+        form {
+            margin: 20px auto;
+            text-align: center;
+        }
+
+        label {
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        input {
+            margin-right: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <div class="logo">Child Safety - Parent Dashboard</div>
+        <div class="nav-links">
+            <a href="remote_logout.php">Logout</a>
+        </div>
+    </div>
+    <hr>
+
+    <div id="map"></div>
+
+    <!-- Add a form for radius input -->
+    <form id="radiusForm" onsubmit="submitForm(); return false;">
+        <label for="radiusInput">Enter Radius (in meters):</label>
+        <input type="number" id="radiusInput" name="radiusInput" required>
+        <button type="submit">Submit</button>
+    </form>
+
+    <script>
+        var map;
+        var marker;
+
+        function initMap() {
+            map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 8,
+                center: { lat: -34.397, lng: 150.644 }
+            });
+
+            marker = new google.maps.Marker({
+                map: map,
+                title: 'Your Location',
+                draggable: true
+            });
+
+            // Add click event listener to the map
+            google.maps.event.addListener(map, 'click', function (event) {
+                updateMarkerPosition(event.latLng);
+            });
+        }
+
+        function submitForm() {
+            var radiusInput = document.getElementById('radiusInput').value;
+            var location = marker.getPosition();
+            var lat = location.lat();
+            var lng = location.lng();
+
+            // Use an AJAX request to send data to a PHP page
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', 'handle_location.php', true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    // Handle the response from the PHP page if needed
+                    console.log(xhr.responseText);
+                }
+            };
+            xhr.send('lat=' + lat + '&lng=' + lng + '&radius=' + radiusInput);
+        }
+
+        function updateMarkerPosition(location) {
+            marker.setPosition(location);
+            var lat = location.lat();
+            var lng = location.lng();
+
+            // Do something with lat and lng, e.g., display in an alert
+            alert('Latitude: ' + lat + '\nLongitude: ' + lng);
+        }
+    </script>
+
+    <!-- Include the Google Maps API script -->
+    <script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAqHW3QmMMYPOP6uR5MMFvQQoIB3OkdhnE&callback=initMap">
+    </script>
+</body>
+
+</html>
