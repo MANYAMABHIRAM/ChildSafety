@@ -132,9 +132,6 @@
         function initMap() {
             // latitude = parseFloat(locationData.latitude);
             // longitude = parseFloat(longitude);
-            console.log(typeof locationData.latitude);
-            console.log(locationData.latitude);
-            console.log(locationData.longitude);
             var map = new google.maps.Map(document.getElementById('map'), {
                 center: {
                     lat: locationData.latitude,
