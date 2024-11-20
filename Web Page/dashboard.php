@@ -102,7 +102,6 @@
         <div class="nav-links">
             <a href="#">Dashboard</a>
             <a href="history2.php">History</a>
-            <a href="atthist.html">Attendance History</a>
             <a href="logout.php">Logout</a>
         </div>
     </div>
